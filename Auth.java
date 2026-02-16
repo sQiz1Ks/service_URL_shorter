@@ -1,20 +1,14 @@
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.UUID;
 
 public class Auth {
     private final HashMap users = new HashMap<String, String>();
-    private final Scanner scanner;
-
-    public Auth(){
-        scanner = new Scanner(System.in);
-
-        users.put("admin", "password123");
-        users.put("user", "qwerty");
-    }
+    private final Scanner scanner = new Scanner(System.in);
     public boolean login(){
         System.out.println("User authorization");
         while (true){
-            System.out.println("Your login");
+            System.out.println("Your UUID");
             String username = scanner.nextLine().trim();
 
             System.out.println("Your password");
@@ -34,6 +28,13 @@ public class Auth {
             return false;
         }
         return users.containsKey(user) && users.get(user).equals(pass);
+    }
+    public boolean register(String uuid, String password){
+        while (users.containsKey(uuid)){
+            uuid = UUID.randomUUID().toString();
+        }
+        users.put(uuid, password);
+        return true;
     }
 }
 

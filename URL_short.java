@@ -63,16 +63,4 @@ public class URL_short {
         UrlMap.put(code, longUrl);
         return code;
     }
-
-    public static void main(String[] args) {
-        URL_short urlShort = new URL_short();
-        String longUrl = "https://stackoverflow.com/questions/29312243/how-to-cast-a-hashmap-to-map";
-        String code = urlShort.shorten(longUrl);
-        System.out.println("http://clck.ru/"+code);
-        try {
-            Desktop.getDesktop().browse(new URI(urlShort.expand(code)));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }
