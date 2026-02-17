@@ -6,7 +6,11 @@ import java.util.*;
 import java.util.List;
 
 public class Main {
-    public static int mainmenu(){
+    Scanner scanner = new Scanner(System.in);
+    Auth auth = new Auth();
+    DBase dBase = new DBase();
+    URL_short urlShort = new URL_short();
+    public static int mainmenu() {
         int option;
         Scanner input = new Scanner(System.in);
 
@@ -19,7 +23,8 @@ public class Main {
         option = input.nextInt();
         return option;
     }
-    public static int usermenu(){
+
+    public static int usermenu() {
         int option;
         Scanner input = new Scanner(System.in);
 
@@ -32,7 +37,8 @@ public class Main {
         option = input.nextInt();
         return option;
     }
-    public static int adminmenu(){
+
+    public static int adminmenu() {
         int option;
         Scanner input = new Scanner(System.in);
 
@@ -47,7 +53,8 @@ public class Main {
         option = input.nextInt();
         return option;
     }
-    public static int urlmenu(){
+
+    public static int urlmenu() {
         int option;
         Scanner input = new Scanner(System.in);
 
@@ -62,212 +69,32 @@ public class Main {
         option = input.nextInt();
         return option;
     }
-    public static void main(String[] args) {
-        String pswrd;
-        String url;
-        String uuid = "";
-        String shurl;
-        String lftime;
-        String code;
-        int nusage;
-        int mmenu;
-        int urmenu;
-        int umenu;
-        List<Object> curent;
-        Auth auth = new Auth();
-        URL_short urlShort = new URL_short();
-        DBase dBase = new DBase();
-        List<Object> urlf = new ArrayList<>();
-        Scanner scanner = new Scanner(System.in);
-        mmenu = mainmenu();
-        while (mmenu != 3){
-            switch (mmenu){
-                case (1):
-                    System.out.println("Please enter your URL");
-                    url = scanner.nextLine().trim();
-                    System.out.println("You are new user, please enter your password");
-                    pswrd = scanner.nextLine().trim();
-                    uuid = UUID.randomUUID().toString();
-                    auth.register(uuid, pswrd);
-                    System.out.println("Your registration complete, here your UUID: " + uuid);
-                    System.out.println("And your password: " + pswrd);
-                    shurl = urlShort.shorten(url);
-                    System.out.println("Your URL is has been shorted: http://clck.ru/" + shurl);
-                    System.out.println("Please enter lifespan of your short URL in format of MM:DD:YYYY");
-                    lftime = scanner.nextLine().trim();
-                    System.out.println("Please enter number of uses of your short URL");
-                    nusage = scanner.nextInt();
-                    urlf.add(shurl);
-                    urlf.add(lftime);
-                    urlf.add(nusage);
-                    dBase.addObject(uuid, urlf);
-                    urmenu = usermenu();
-                    while (urmenu != 3){
-                    switch (urmenu) {
-                        case (1):
-                            System.out.println("Please enter your URL");
-                            url = scanner.nextLine().trim();
-                            shurl = urlShort.shorten(url);
-                            System.out.println("Your URL is has been shorted: http://clck.ru/" + shurl);
-                            System.out.println("Please enter lifespan of your short URL in format of MM:DD:YYYY");
-                            lftime = scanner.nextLine().trim();
-                            System.out.println("Please enter number of uses of your short URL");
-                            nusage = scanner.nextInt();
-                            urlf.add(shurl);
-                            urlf.add(lftime);
-                            urlf.add(nusage);
-                            dBase.addObject(uuid, urlf);
-                            break;
-                        case (2):
-                            System.out.println("Here all your's URL's [[code, date, usege]]");
-                            System.out.println(dBase.getObjects(uuid));
-                            umenu = urlmenu();
-                            while (umenu != 5) {
-                                switch (umenu) {
-                                    case (1):
-                                        System.out.println("Please enter your URL");
-                                        url = scanner.nextLine().trim();
-                                        shurl = urlShort.shorten(url);
-                                        System.out.println("Your URL is has been shorted: http://clck.ru/" + shurl);
-                                        System.out.println("Please enter lifespan of your short URL in format of MM:DD:YYYY");
-                                        lftime = scanner.nextLine().trim();
-                                        System.out.println("Please enter number of uses of your short URL");
-                                        nusage = scanner.nextInt();
-                                        urlf.add(shurl);
-                                        urlf.add(lftime);
-                                        urlf.add(nusage);
-                                        dBase.addObject(uuid, urlf);
-                                        break;
-                                    case (2):
-                                        System.out.println("Which URL you want to delete, please enter required index");
-                                        int index = scanner.nextInt();
-                                        curent = Arrays.asList(dBase.getObjects(uuid)).get(index);
-                                        urlShort.delete(curent.get(0).toString());
-                                        dBase.removeObject(uuid, index);
-                                        System.out.println("URL was delete");
-                                        dBase.getObjects(uuid);
-                                        break;
-                                    case (3):
-                                        for (int i = 0; i < Arrays.asList(dBase.getObjects(uuid)).size(); i++) {
-                                            curent = Arrays.asList(dBase.getObjects(uuid)).get(i);
-                                            urlShort.delete(curent.get(0).toString());
-                                        }
-                                        dBase.clearUserObjects(uuid);
-                                        System.out.println("Your URL base was cleared");
-                                        dBase.getObjects(uuid);
-                                        break;
-                                    case (4):
+    public void mmenu(){
+        switch (mainmenu()){
+            case(1):
+                String uuid = UUID.randomUUID().toString();
+                System.out.println("Please enter your URL");
+                String longURL = scanner.nextLine().trim();
+                System.out.println("You're a new user, please enter password");
+                String pass = scanner.nextLine().trim();
+                while(!auth.register(uuid, pass)){
+                    System.out.println("Something gone wrong, try again");
+                    pass = scanner.nextLine().trim();
+                }
+                System.out.println("Your registration is complete");
+                System.out.println("This is your UUID: " + uuid);
+                System.out.println("This is your shorted URL:" + urlShort.shorten(longURL));
+                umenu();
+                break;
+            case(2):
+                System.out.println("Please ");
 
-                                        System.out.println("Please enter short URL code");
-                                        code = scanner.nextLine().trim();
-                                        URI uri = null;
-                                        try {
-                                            uri = new URI(urlShort.expand(code));
-                                        } catch (URISyntaxException e) {
-                                            throw new RuntimeException(e);
-                                        }
-                                        System.out.println(urlShort.expand(code));
 
-                                        try {
-                                            Desktop.getDesktop().browse(uri);
-                                        } catch (IOException e) {
-                                            throw new RuntimeException(e);
-                                        }
-                                        break;
-                                }
-                                umenu = urlmenu();
-                            }
-                            break;
-                    }
-                    urmenu = usermenu();
-                    }
-                case(2):
-                    if (auth.login()){
-                        urmenu = usermenu();
-                        while (urmenu != 3){
-                            switch (urmenu) {
-                                case (1):
-                                    System.out.println("Please enter your URL");
-                                    url = scanner.nextLine().trim();
-                                    shurl = urlShort.shorten(url);
-                                    System.out.println("Your URL is has been shorted: http://clck.ru/" + shurl);
-                                    System.out.println("Please enter lifespan of your short URL in format of MM:DD:YYYY");
-                                    lftime = scanner.nextLine().trim();
-                                    System.out.println("Please enter number of uses of your short URL");
-                                    nusage = scanner.nextInt();
-                                    urlf.add(shurl);
-                                    urlf.add(lftime);
-                                    urlf.add(nusage);
-                                    dBase.addObject(uuid, urlf);
-                                    break;
-                                case (2):
-                                    System.out.println("Here all your's URL's [[code, date, usege]]");
-                                    System.out.println(dBase.getObjects(uuid));
-                                    while (urlmenu() != 5) {
-                                        switch (urlmenu()) {
-                                            case (1):
-                                                System.out.println("Please enter your URL");
-                                                url = scanner.nextLine().trim();
-                                                shurl = urlShort.shorten(url);
-                                                System.out.println("Your URL is has been shorted: http://clck.ru/" + shurl);
-                                                System.out.println("Please enter lifespan of your short URL in format of MM:DD:YYYY");
-                                                lftime = scanner.nextLine().trim();
-                                                System.out.println("Please enter number of uses of your short URL");
-                                                nusage = scanner.nextInt();
-                                                urlf.add(shurl);
-                                                urlf.add(lftime);
-                                                urlf.add(nusage);
-                                                dBase.addObject(uuid, urlf);
-                                                break;
-                                            case (2):
-                                                System.out.println("Which URL you want to delete, please enter required index");
-                                                int index = scanner.nextInt();
-                                                curent = Arrays.asList(dBase.getObjects(uuid)).get(index);
-                                                urlShort.delete(curent.get(0).toString());
-                                                dBase.removeObject(uuid, index);
-                                                System.out.println("URL was delete");
-                                                dBase.getObjects(uuid);
-                                                break;
-                                            case (3):
-                                                for (int i = 0; i < dBase.getObjects(uuid).size(); i++) {
-                                                    curent = Arrays.asList(dBase.getObjects(uuid)).get(i);
-                                                    urlShort.delete(curent.get(0).toString());
-                                                }
-                                                dBase.clearUserObjects(uuid);
-                                                System.out.println("Your URL base was cleared");
-                                                dBase.getObjects(uuid);
-                                                break;
-                                            case (4):
-                                                System.out.println("Please enter short URL code");
-                                                code = scanner.nextLine().trim();
-                                                URI uri = null;
-                                                try {
-                                                    uri = new URI(urlShort.expand(code));
-                                                } catch (URISyntaxException e) {
-                                                    throw new RuntimeException(e);
-                                                }
-                                                System.out.println(urlShort.expand(code));
 
-                                                try {
-                                                    Desktop.getDesktop().browse(uri);
-                                                } catch (IOException e) {
-                                                    throw new RuntimeException(e);
-                                                }
-                                                break;
-                                        }
 
-                                    }
-                                    break;
-                            }
-                            urmenu = usermenu();
-                        }
-                    } else {
-                        System.out.println("Something gone wrong please try again");
-                    }
-
-                    break;
-            }
-            mmenu = mainmenu();
         }
+    }
+
+    public static void main(String[] args) {
     }
 }
